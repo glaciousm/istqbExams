@@ -21,9 +21,9 @@
 			  	<div  class="floatLeft" style="display: inline-block;">
 			  		<span class="lead">List of Results </span>
 			  	</div>
-			  	<div class="floatRight" style="width:30%;display: inline-block;background-color: red">
+			  	<div class="floatRight" style="width:20%;display: inline-block">
 			  		<form action="/istqbExams/usertestresults" method="get">
-			  			<select name="id" class="form-control" style="width:30%;display: inline-block;">
+			  			<select name="id" class="form-control" style="width:70%;display: inline-block;">
 							<c:forEach var="item" varStatus="loop" items="${userList}">
 	        					<option value="${item.id}">${item.firstName} ${item.lastName}</option>
 	   						 </c:forEach>
