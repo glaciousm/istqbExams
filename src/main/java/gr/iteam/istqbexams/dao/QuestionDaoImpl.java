@@ -10,6 +10,7 @@ import org.hibernate.criterion.Order;
 import org.hibernate.criterion.Restrictions;
 import org.springframework.stereotype.Repository;
 
+import gr.iteam.istqbexams.model.Course;
 import gr.iteam.istqbexams.model.Question;
 
 @Repository("questionDao")
@@ -45,10 +46,10 @@ public class QuestionDaoImpl extends AbstractDao<Integer, Question> implements Q
 	
 	@SuppressWarnings("unchecked")
 	@Override
-	public List<Question> randomList(String course) {
+	public List<Question> randomList(int course) {
 		List<Question> randomLst = new ArrayList<Question>();
 		Query query = getSession().createQuery(
-		        "from Question where course = '"+ course + "' order by rand()");
+		        "from Question where courseid = '"+ course + "' order by rand()");
 		query.setMaxResults(40);
 		randomLst = query.list();
 		return randomLst;
@@ -56,10 +57,10 @@ public class QuestionDaoImpl extends AbstractDao<Integer, Question> implements Q
 	
 	@SuppressWarnings("unchecked")
 	@Override
-	public List<Question> randomList(String course, int max) {
+	public List<Question> randomList(int course, int max) {
 		List<Question> randomLst = new ArrayList<Question>();
 		Query query = getSession().createQuery(
-		        "from Question where course = '"+ course+"'  order by rand()");
+		        "from Question where courseid = '"+ course+"'  order by rand()");
 		query.setMaxResults(max);
 		randomLst = query.list();
 		return randomLst;
@@ -67,11 +68,11 @@ public class QuestionDaoImpl extends AbstractDao<Integer, Question> implements Q
 	
 	@SuppressWarnings("unchecked")
 	@Override
-	public List<Question> randomListFromChapter(String course, int max,int chap) {
+	public List<Question> randomListFromChapter(int course, int max,int chap) {
 		List<Question> randomLst = new ArrayList<Question>();
 		Query query = getSession().createQuery(
 		        "from Question " + 
-				"where chapter = " + chap + " and course = '"+ course + "' order by rand()");
+				"where chapter = " + chap + " and courseid = "+ course + " order by rand()");
 		query.setMaxResults(max);
 		randomLst = query.list();
 		return randomLst;
@@ -79,11 +80,11 @@ public class QuestionDaoImpl extends AbstractDao<Integer, Question> implements Q
 	
 	@SuppressWarnings("unchecked")
 	@Override
-	public List<Question> listFromCourse(String course) {
+	public List<Question> listFromCourse(int course) {
 		List<Question> randomLst = new ArrayList<Question>();
 		Query query = getSession().createQuery(
 		        "from Question " + 
-				"where course = '" + course + "'");
+				"where courseid = '" + course + "'");
 		randomLst = query.list();
 		return randomLst;
 	}
@@ -96,13 +97,33 @@ public class QuestionDaoImpl extends AbstractDao<Integer, Question> implements Q
 		delete(question);
 		
 	}
+	
+	@SuppressWarnings("unchecked")
+	@Override
+	public void deleteByCourse(Course course) {
+		Criteria crit = createEntityCriteria();
+		crit.add(Restrictions.eq("course", course));
+		List<Question> question = (List<Question>)crit.list();
+		for (Question question2 : question) {
+			delete(question2);
+		}		
+	}
 
 	@SuppressWarnings("unchecked")
 	@Override
-	public List<Question> list(String course) {
+	public List<Question> list() {
 		Criteria criteria = createEntityCriteria().addOrder(Order.asc("id"));
 		criteria.setResultTransformer(Criteria.DISTINCT_ROOT_ENTITY);
 		List<Question> questionList = (List<Question>) criteria.list();
+		return questionList;
+	}
+
+	@SuppressWarnings("unchecked")
+	@Override
+	public List<Question> findByCourse(Course course) {
+		Criteria crit = createEntityCriteria();
+		crit.add(Restrictions.eq("course", course));
+		List<Question> questionList = (List<Question>) crit.list();
 		return questionList;
 	}
 

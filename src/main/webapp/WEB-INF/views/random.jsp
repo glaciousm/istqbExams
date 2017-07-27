@@ -157,6 +157,7 @@
 			<br>
 			<br>
 			<br>
+			<input name="course" value="${course}" type="hidden"/>
 			<c:forEach items="${random.questionList}" var="questions" varStatus="loop">
 				<div class="questionBox" style="background-color:#e3e4e8; margin: 10px;">
 				<h3>Question ${loop.index+1}  [Ch.${questions.chapter}]</h3>

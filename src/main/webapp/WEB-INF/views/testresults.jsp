@@ -12,18 +12,17 @@
 </head>
 <body style="height:100%;width:100%">
 	<div class="generic-container" style="height:95%;width:96%" >
-		<%@include file="authheader.jsp" %>
-		
+		<%@include file="authheader.jsp" %>		
 		
 		<c:choose>
-		    <c:when test="${fn:length(wrong) gt 25}">
+		    <c:when test="${percentage lt 65}">
 		        <div class="alert alert-danger lead">
-			    	${Failed}
+			    	${Result}
 				</div>
 		    </c:when>    
 		    <c:otherwise>
 		        <div class="alert alert-success lead">
-			    	${Passed}
+			    	${Result}
 				</div>
 		    </c:otherwise>
 		</c:choose>

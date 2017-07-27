@@ -21,11 +21,18 @@
 			  	<div  class="floatLeft" style="display: inline-block;">
 			  		<span class="lead">List of Results </span>
 			  	</div>
-			  	<div class="floatRight" style="width:20%;display: inline-block">
+			  	<div class="floatRight" style="width:60%;display: inline-block">
 			  		<form action="/istqbExams/usertestresults" method="get">
-			  			<select name="id" class="form-control" style="width:70%;display: inline-block;">
+			  		<label>Select User</label>
+			  			<select name="userid" class="form-control" style="width:35%;display: inline-block;">
 							<c:forEach var="item" varStatus="loop" items="${userList}">
 	        					<option value="${item.id}">${item.firstName} ${item.lastName}</option>
+	   						 </c:forEach>
+					  </select>	
+					  <label>Select Course</label>
+					  <select name="courseid" class="form-control" style="width:35%;display: inline-block;">
+							<c:forEach var="item" varStatus="loop" items="${courseList}">
+	        					<option value="${item.id}">${item.name}</option>
 	   						 </c:forEach>
 					  </select>		
 					  <input id="submitBtn" class="btn btn-primary" type="submit" value="Search"/>
@@ -38,6 +45,7 @@
 		      		<tr>
 				        <th>User</th>
 				        <th>Score</th>
+				        <th>Course</th>
 				        <th>Date</th>
 				        
 					</tr>
@@ -47,6 +55,7 @@
 					<tr>
 						<td>${result.user}</td>
 						<td>${result.score} %</td>
+						<td>${result.course.name}</td>
 						<td>${result.date}</td>					    
 					</tr>
 				</c:forEach>

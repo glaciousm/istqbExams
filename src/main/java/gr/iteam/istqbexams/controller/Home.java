@@ -28,12 +28,13 @@ import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
 
 import gr.iteam.istqbexams.model.CorrectAnswer;
-import gr.iteam.istqbexams.model.Courses;
+import gr.iteam.istqbexams.model.Course;
 import gr.iteam.istqbexams.model.Exam;
 import gr.iteam.istqbexams.model.Question;
 import gr.iteam.istqbexams.model.Result;
 import gr.iteam.istqbexams.model.User;
 import gr.iteam.istqbexams.model.UserProfile;
+import gr.iteam.istqbexams.service.CourseService;
 import gr.iteam.istqbexams.service.QuestionService;
 import gr.iteam.istqbexams.service.ResultService;
 import gr.iteam.istqbexams.service.UserProfileService;
@@ -52,6 +53,9 @@ public class Home {
 	
 	@Autowired
 	ResultService resultService;
+	
+	@Autowired
+	CourseService courseService;
 	
 	@Autowired
 	AuthenticationTrustResolver authenticationTrustResolver;
@@ -76,7 +80,7 @@ public class Home {
 	
 	@RequestMapping(value = { "/list" }, method = RequestMethod.GET)
 	public String list(ModelMap model) {
-		List<Courses> courseList = new ArrayList<Courses>(EnumSet.allOf(Courses.class));
+		List<Course> courseList = courseService.findAll();
 		if (isCurrentAuthenticationAnonymous()) {
 			return "login";
 		}
@@ -86,11 +90,11 @@ public class Home {
 	}
 	
 	@RequestMapping(value = { "/list" }, method = RequestMethod.POST)
-	public String list(ModelMap model, @RequestParam Courses course) {
+	public String list(ModelMap model, @RequestParam String name) {
 		if (isCurrentAuthenticationAnonymous()) {
 			return "login";
 		}
-		List<Question> questions = questionService.listFromCourse(course.toString());
+		List<Question> questions = questionService.listFromCourse(courseService.findByName(name).getId());
 		model.addAttribute("questions", questions);
 		model.addAttribute("counter", questions.size());
 		model.addAttribute("loggedinuser", getPrincipal());
@@ -102,23 +106,23 @@ public class Home {
 		if (isCurrentAuthenticationAnonymous()) {
 			return "login";
 		}
-		List<Courses> courseList = new ArrayList<Courses>(EnumSet.allOf(Courses.class));
+		List<Course> courseList = courseService.findAll();
 		model.addAttribute("courseList",courseList);
 		model.addAttribute("loggedinuser", getPrincipal());
 		return "start";
 	}
 	
 	@RequestMapping(value = { "/random" }, method = RequestMethod.POST)
-	public String randomList(@RequestParam Courses course, @RequestParam int ch1,@RequestParam int ch2,@RequestParam int ch3,@RequestParam int ch4,@RequestParam int ch5,@RequestParam int ch6, ModelMap model) {
+	public String randomList(@RequestParam String course, @RequestParam int ch1,@RequestParam int ch2,@RequestParam int ch3,@RequestParam int ch4,@RequestParam int ch5,@RequestParam int ch6, ModelMap model) {
 		if (isCurrentAuthenticationAnonymous()) {
 			return "login";
 		}
-		List<Question> ch1List = questionService.randomListFromChapter(course.toString(), ch1, 1);
-		List<Question> ch2List = questionService.randomListFromChapter(course.toString(), ch2, 2);
-		List<Question> ch3List = questionService.randomListFromChapter(course.toString(), ch3, 3);
-		List<Question> ch4List = questionService.randomListFromChapter(course.toString(), ch4, 4);
-		List<Question> ch5List = questionService.randomListFromChapter(course.toString(), ch5, 5);
-		List<Question> ch6List = questionService.randomListFromChapter(course.toString(), ch6, 6);
+		List<Question> ch1List = questionService.randomListFromChapter(Integer.valueOf(course), ch1, 1);
+		List<Question> ch2List = questionService.randomListFromChapter(Integer.valueOf(course), ch2, 2);
+		List<Question> ch3List = questionService.randomListFromChapter(Integer.valueOf(course), ch3, 3);
+		List<Question> ch4List = questionService.randomListFromChapter(Integer.valueOf(course), ch4, 4);
+		List<Question> ch5List = questionService.randomListFromChapter(Integer.valueOf(course), ch5, 5);
+		List<Question> ch6List = questionService.randomListFromChapter(Integer.valueOf(course), ch6, 6);
 		List<Question> questions = new ArrayList<>();
 		for (Question question1 : ch1List) {
 			questions.add(question1);
@@ -140,6 +144,7 @@ public class Home {
 		}
 		Exam exam = new Exam();
 		exam.setQuestionList(questions);
+		model.addAttribute("course", course);
 		model.addAttribute("random", exam);
 		model.addAttribute("loggedinuser", getPrincipal());
 		return "random";
@@ -152,7 +157,7 @@ public class Home {
 		}
 		Question question = new Question();
 		List<CorrectAnswer> correctList = new ArrayList<CorrectAnswer>(EnumSet.allOf(CorrectAnswer.class));
-		List<Courses> courseList = new ArrayList<Courses>(EnumSet.allOf(Courses.class));
+		List<Course> courseList = courseService.findAll();
 		model.addAttribute("correct", correctList);
 		model.addAttribute("course", courseList);
 		model.addAttribute("question", question);
@@ -162,11 +167,14 @@ public class Home {
 	}
 
 	@RequestMapping(value = { "/newquestion" }, method = RequestMethod.POST)
-	public String saveUser(@Valid Question question, BindingResult result, ModelMap model) {
+	public String saveUser(@Valid Question question, BindingResult result, ModelMap model, @RequestParam String course) {
 		if (isCurrentAuthenticationAnonymous()) {
 			return "login";
 		}
-		System.out.println(question);
+		if (course !="" || course!=null) {
+			question.setCourse(courseService.findById(Integer.valueOf(course)));
+		}
+		
 		questionService.saveOrUpdate(question);
 		model.addAttribute("loggedinuser", getPrincipal());
 		model.addAttribute("success", "Question " + question.getId() + " added successfully");
@@ -178,9 +186,11 @@ public class Home {
 		if (isCurrentAuthenticationAnonymous()) {
 			return "login";
 		}
+		List<Course> courseList = courseService.findAll();
 		Question question = questionService.findById(id);
 		List<CorrectAnswer> correctList = new ArrayList<CorrectAnswer>(EnumSet.allOf(CorrectAnswer.class));
 		model.addAttribute("question", question);
+		model.addAttribute("course", courseList);
 		model.addAttribute("correct", correctList);
 		model.addAttribute("edit", true);
 		model.addAttribute("loggedinuser", getPrincipal());
@@ -189,10 +199,12 @@ public class Home {
 	
 	@RequestMapping(value = { "/edit-question-{id}" }, method = RequestMethod.POST)
 	public String updateUser(@Valid Question question, BindingResult result,
-			ModelMap model, @PathVariable int id) {
+			ModelMap model, @PathVariable int id, @RequestParam String course) {
 		if (isCurrentAuthenticationAnonymous()) {
 			return "login";
 		}
+		int courseId = Integer.valueOf(course);
+		question.setCourse(courseService.findById(courseId));
 		question.setContext(Parser.parseString(question.getContext()));
 		questionService.saveOrUpdate(question);
 		model.addAttribute("loggedinuser", getPrincipal());
@@ -202,7 +214,7 @@ public class Home {
 	
 	@RequestMapping(value = { "/testresults" }, method = RequestMethod.POST)
 	public String checkResults(Exam random, BindingResult result,
-			ModelMap model) {
+			ModelMap model, @RequestParam String course) {
 		if (isCurrentAuthenticationAnonymous()) {
 			return "login";
 		}
@@ -220,16 +232,20 @@ public class Home {
 			}
 			index++;
 		}
-		if (resultCount>=26) {			
-			model.addAttribute("Passed", "Congrats you passed the test!!! You scored " + resultCount + " out of " + qList.size() + "!!!");
+		long percentage = (100*resultCount) / qList.size();
+		System.out.println(percentage);
+		model.addAttribute("percentage", percentage);
+		if (percentage>=65) {			
+			model.addAttribute("Result", "Congrats you passed the test!!! You scored " + percentage + "% !! You got correct " + resultCount + " out of " + qList.size() + "!!!");
 		} else {
-			model.addAttribute("Failed", "You Failed the test, you scored " + resultCount + " out of " + qList.size());
+			model.addAttribute("Result", "You Failed the test, you scored " + percentage + "% . You got correct " + resultCount + " out of " + qList.size());
 		}
 		model.addAttribute("wrong", wrongList);
 		model.addAttribute("loggedinuser", getPrincipal());
 		Result results = new Result();
 		User user = userService.findBySSO(getPrincipal());
 		double score = ((double)resultCount*100)/(double)qList.size();
+		results.setCourse(courseService.findById(Integer.valueOf(course)));
 		results.setDate(new Date());
 		results.setScore(score);
 		results.setUserId(user.getId());
@@ -240,6 +256,7 @@ public class Home {
 	@RequestMapping(value = { "/resultlist" }, method = RequestMethod.GET)
 	public String resultList(ModelMap model) {
 		List<User> userList = userService.findAllUsers();
+		List<Course> courseList = courseService.findAll();
 		if (isCurrentAuthenticationAnonymous()) {
 			return "login";
 		}
@@ -247,24 +264,103 @@ public class Home {
 		for (Result result : results) {
 			result.setUser(userService.findById(result.getUserId()).getFirstName() + " " + userService.findById(result.getUserId()).getLastName());
 		}
+		model.addAttribute("courseList", courseList);
 		model.addAttribute("userList", userList);
 		model.addAttribute("results", results);
 		model.addAttribute("loggedinuser", getPrincipal());
 		return "resultlist";
 	}
 	
-	@RequestMapping(value = { "/usertestresults" }, method = RequestMethod.GET)
-	public String resultList(ModelMap model, @RequestParam int id) {
-		List<User> userList = userService.findAllUsers();
+	@RequestMapping(value = { "/courselist" }, method = RequestMethod.GET)
+	public String courseList(ModelMap model) {
 		if (isCurrentAuthenticationAnonymous()) {
 			return "login";
 		}
-		List<Result> results = resultService.listByUser(id);
+		List<Course> courseList = courseService.findAll();
+		model.addAttribute("courseList", courseList);
+		model.addAttribute("loggedinuser", getPrincipal());
+		return "courselist";
+	}
+	
+	@RequestMapping(value = { "/edit-course-{id}" }, method = RequestMethod.GET)
+	public String editCourse(@PathVariable int id, ModelMap model) {
+		if (isCurrentAuthenticationAnonymous()) {
+			return "login";
+		}
+		Course course = courseService.findById(id);
+		model.addAttribute("course", course);
+		model.addAttribute("edit", true);
+		model.addAttribute("loggedinuser", getPrincipal());
+		return "course";
+	}
+	
+	@RequestMapping(value = { "/edit-course-{id}" }, method = RequestMethod.POST)
+	public String editCourse(@Valid Course course, BindingResult result,
+			ModelMap model, @PathVariable int id) {
+		if (isCurrentAuthenticationAnonymous()) {
+			return "login";
+		}
+		courseService.saveOrUpdate(course);
+		model.addAttribute("loggedinuser", getPrincipal());
+		model.addAttribute("success", "Course " + course.getName() + " updated successfully");
+		return "success";
+	}
+	
+	@RequestMapping(value = { "/newcourse" }, method = RequestMethod.GET)
+	public String newCourse(ModelMap model) {
+		if (isCurrentAuthenticationAnonymous()) {
+			return "login";
+		}
+		Course course = new Course();
+		model.addAttribute("course", course);
+		model.addAttribute("edit", false);
+		model.addAttribute("loggedinuser", getPrincipal());
+		return "course";
+	}
+	
+	@RequestMapping(value = { "/newcourse" }, method = RequestMethod.POST)
+	public String saveCourse(@Valid Course course, BindingResult result,
+			ModelMap model) {
+		if (isCurrentAuthenticationAnonymous()) {
+			return "login";
+		}
+		if (result.hasErrors()) {
+			return "course";
+		}
+		
+		courseService.saveOrUpdate(course);
+
+		model.addAttribute("success", "Course " + course.getName() + " saved successfully");
+		model.addAttribute("loggedinuser", getPrincipal());
+		return "success";
+	}
+	
+	@RequestMapping(value = { "/delete-course-{id}" }, method = RequestMethod.GET)
+	public String deleteCourse(@PathVariable int id, ModelMap model) {
+		String name = courseService.findById(id).getName();
+		if (isCurrentAuthenticationAnonymous()) {
+			return "login";
+		}
+		courseService.deleteByCourse(id);
+		model.addAttribute("success", "Course " + name + " successfully deleted");
+		return "success";
+	}
+	
+	
+	@RequestMapping(value = { "/usertestresults" }, method = RequestMethod.GET)
+	public String resultList(ModelMap model, @RequestParam int userid, @RequestParam int courseid) {
+		List<User> userList = userService.findAllUsers();
+		List<Course> courseList = courseService.findAll();
+		if (isCurrentAuthenticationAnonymous()) {
+			return "login";
+		}
+		List<Result> results = resultService.listByUserAndCourse(userid, courseid);
 		for (Result result : results) {
 			result.setUser(userService.findById(result.getUserId()).getFirstName() + " " + userService.findById(result.getUserId()).getLastName());
 		}
 		model.addAttribute("results", results);
 		model.addAttribute("userList", userList);
+		model.addAttribute("courseList", courseList);
 		model.addAttribute("loggedinuser", getPrincipal());
 		return "resultlist";
 	}
@@ -313,7 +409,7 @@ public class Home {
 		model.addAttribute("success", "User " + user.getFirstName() + " "+ user.getLastName() + " registered successfully");
 		model.addAttribute("loggedinuser", getPrincipal());
 		//return "success";
-		return "registrationsuccess";
+		return "success";
 	}
 	
 	@RequestMapping(value = { "/edit-user-{ssoId}" }, method = RequestMethod.GET)
@@ -346,7 +442,7 @@ public class Home {
 
 		model.addAttribute("success", "User " + user.getFirstName() + " "+ user.getLastName() + " updated successfully");
 		model.addAttribute("loggedinuser", getPrincipal());
-		return "registrationsuccess";
+		return "success";
 	}
 	
 	@RequestMapping(value="/logout", method = RequestMethod.GET)

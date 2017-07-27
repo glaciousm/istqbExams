@@ -14,4 +14,5 @@ public interface ResultService {
 	
 	List<Result> listByUser(int id);
 
+	List<Result> listByUserAndCourse(int userId, int courseId);
 }

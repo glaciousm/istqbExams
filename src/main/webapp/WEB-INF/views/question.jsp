@@ -24,7 +24,7 @@
 				<div class="form-group col-md-12">
 					<label class="col-md-3 control-lable" for="context">Question</label>
 					<div class="col-md-7">
-						<form:textarea path="context" rows="10" cols="30"  id="context" class="form-control" style="height:200px;"/>
+						<form:textarea path="context" rows="10" cols="30"  id="context" class="form-control" style="height:100px;"/>
 						<%-- <form:input type="text" path="context" id="context" class="form-control input-sm" style="height:200px;"/> --%>
 					</div>
 				</div>
@@ -103,10 +103,11 @@
 				<div class="form-group col-md-12">
 					<label class="col-md-3 control-lable" for="course">Course</label>
 					<div class="col-md-7">
-					${question.course}
 						<form:select path="course" style="text-transform: uppercase">
-							<form:option value="${question.course}" />
-							<form:options items="${course}" />					 
+							<option value="${question.course.id}" >${question.course.name}</option>
+								<c:forEach var="item" varStatus="loop" items="${course}">
+		        					<option value="${item.id}">${item.name}</option>
+		   						</c:forEach>				 
 						</form:select>
 					</div>
 				</div>

@@ -28,7 +28,7 @@
 				        <sec:authorize access="hasRole('ADMIN') or hasRole('MANAGER')">
 				        	<th width="100"></th>
 				        </sec:authorize>
-				        <sec:authorize access="hasRole('ADMIN')">
+				        <sec:authorize access="hasRole('ADMIN') or hasRole('MANAGER')">
 				        	<th width="100"></th>
 				        </sec:authorize>
 				        

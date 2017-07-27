@@ -7,6 +7,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import gr.iteam.istqbexams.dao.QuestionDao;
+import gr.iteam.istqbexams.model.Course;
 import gr.iteam.istqbexams.model.Question;
 
 @Service("questionService")
@@ -70,12 +71,12 @@ public class QuestionServiceImpl implements QuestionService {
 	}
 
 	@Override
-	public List<Question> list(String course) {
-		return questionDao.list(course);
+	public List<Question> list() {
+		return questionDao.list();
 	}
 
 	@Override
-	public List<Question> listFromCourse(String course) {
+	public List<Question> listFromCourse(int course) {
 		return questionDao.listFromCourse(course);
 	}
 
@@ -85,18 +86,24 @@ public class QuestionServiceImpl implements QuestionService {
 	}
 
 	@Override
-	public List<Question> randomList(String course) {
+	public List<Question> randomList(int course) {
 		return questionDao.randomList(course);
 	}
 	
 	@Override
-	public List<Question> randomList(String course, int max) {
+	public List<Question> randomList(int course, int max) {
 		return questionDao.randomList(course, max);
 	}
 
 	@Override
-	public List<Question> randomListFromChapter(String course, int max, int chapter) {
+	public List<Question> randomListFromChapter(int course, int max, int chapter) {
 		return questionDao.randomListFromChapter(course, max, chapter);
+	}
+
+	@Override
+	public void deleteByCourse(Course course) {
+		questionDao.deleteByCourse(course);
+		
 	}
 
 }

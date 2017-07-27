@@ -5,6 +5,8 @@ import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
+import javax.persistence.JoinColumn;
+import javax.persistence.ManyToOne;
 import javax.persistence.Table;
 import javax.persistence.Transient;
 
@@ -42,8 +44,9 @@ public class Question {
 	@Column(name="correct")
 	private String correct;
 	
-	@Column(name="course")
-	private String course;
+	@ManyToOne
+    @JoinColumn(name = "courseid", referencedColumnName = "id")
+	private Course course;
 	
 	@Transient
 	private String selected;
@@ -140,11 +143,12 @@ public class Question {
 		this.selected = selected;
 	}
 
-	public String getCourse() {
+
+	public Course getCourse() {
 		return course;
 	}
 
-	public void setCourse(String course) {
+	public void setCourse(Course course) {
 		this.course = course;
 	}
 

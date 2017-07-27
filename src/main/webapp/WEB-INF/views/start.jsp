@@ -200,7 +200,7 @@
 				  <label>Select Course</label>
 				  <select name="course" style="text-transform: uppercase" class="form-control">
 						<c:forEach var="item" varStatus="loop" items="${courseList}">
-        					<option value="${item}">${item}</option>
+        					<option value="${item.id}">${item.name}</option>
    						 </c:forEach>
 				  </select>		
 				  </div>

@@ -36,4 +36,9 @@ public class ResultServiceImpl implements ResultService {
 		return resultDao.listByUser(id);
 	}
 
+	@Override
+	public List<Result> listByUserAndCourse(int userId, int courseId) {
+		return resultDao.listByUserAndCourse(userId, courseId);
+	}
+
 }

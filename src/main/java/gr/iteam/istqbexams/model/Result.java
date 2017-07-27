@@ -7,6 +7,8 @@ import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
+import javax.persistence.JoinColumn;
+import javax.persistence.ManyToOne;
 import javax.persistence.Table;
 import javax.persistence.Transient;
 
@@ -29,11 +31,23 @@ public class Result {
 	@Column(name="score")
 	double score;
 	
+	@ManyToOne
+    @JoinColumn(name = "courseid", referencedColumnName = "id")
+	private Course course;
+	
 	@Transient
 	String user;
 	
 	public Result() {
 		// TODO Auto-generated constructor stub
+	}
+
+	public Course getCourse() {
+		return course;
+	}
+
+	public void setCourse(Course course) {
+		this.course = course;
 	}
 
 	public int getId() {
@@ -78,8 +92,9 @@ public class Result {
 
 	@Override
 	public String toString() {
-		return "Result [id=" + id + ", userId=" + userId + ", date=" + date + ", score=" + score + ", user=" + user
-				+ "]";
+		return "Result [id=" + id + ", userId=" + userId + ", date=" + date + ", score=" + score + ", course=" + course
+				+ ", user=" + user + "]";
 	}
+
 
 }

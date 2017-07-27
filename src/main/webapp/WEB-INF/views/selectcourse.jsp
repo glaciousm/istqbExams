@@ -21,9 +21,9 @@
 			  <div>
 			  <span>Select Course</span>
 			  <form id="myForm" method="post" action="/istqbExams/list">
-				  <select class="form-control" name="course" style="text-transform: uppercase;width: 200px">
+				  <select class="form-control" name="name" style="text-transform: uppercase;width: 200px">
 						<c:forEach var="item" varStatus="loop" items="${courseList}">
-        					<option value="${item}">${item}</option>
+        					<option value="${item.name}">${item.name}</option>
    						 </c:forEach>
 				  </select>		
 				  <input type="submit" value="Submit" class="btn btn-primary btn-sm" id="submitButton"/>	  
