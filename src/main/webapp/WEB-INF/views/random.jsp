@@ -3,7 +3,6 @@
 <%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
 <%@ taglib prefix="form" uri="http://www.springframework.org/tags/form"%>
 <%@ taglib prefix="sec" uri="http://www.springframework.org/security/tags"%>
-
 <html>
 
 <head>
@@ -12,7 +11,23 @@
 	<link href="<c:url value='/static/css/bootstrap.css' />" rel="stylesheet"></link>
 	<link href="<c:url value='/static/css/app.css' />" rel="stylesheet"></link>
 	<script type="text/javascript">
+	var i = 0;
+	function handleCopy(event) {
+		if (event.type === "copy") {			
+			i=i+1;
+			document.getElementById("coppied").value = i;
+		}
+	}
+	
+	function getTime() {		
+		var myInput = document.getElementById("totalTime");
+		document.getElementById("totalTime").value = document.getElementById("time").innerHTML;
+	}
+	
+	</script>
+	<script type="text/javascript">
             function changeColor(index, name){
+            	getTime();
             	var blocks = document.getElementsByClassName("questionBox");
             	
             	var button = document.getElementById("submitButton");
@@ -158,11 +173,13 @@
 			<br>
 			<br>
 			<input name="course" value="${course}" type="hidden"/>
+			<input id="coppied" name="coppied" value="0"  type="hidden"/>
+			<input id="totalTime" name="totaltime" value="0"  type="hidden"/>
 			<c:forEach items="${random.questionList}" var="questions" varStatus="loop">
 				<div class="questionBox" style="background-color:#e3e4e8; margin: 10px;">
 				<h3>Question ${loop.index+1}  [Ch.${questions.chapter}]</h3>
 				<form:input type="hidden" path="questionList[${loop.index}].id" id="id${loop.index}" />
-				<h4>${questions.context}</h4>				
+				<h4 id="question" onCopy="handleCopy(event)">${questions.context}</h4>				
 				<h4><b>Answer</b></h4>
 				<form:input type="hidden" path="questionList[${loop.index}].correct" id="correct${loop.index}" />
 				<h4><form:checkbox name="selected" value="a" path="questionList[${loop.index}].selected" class="choiseA" onChange="changeColor(${loop.index}, 'choiseA')"/> <b>A.</b> ${questions.answera}</h4>
@@ -173,7 +190,7 @@
     			</div>
 			</c:forEach>
 			
-			<input type="submit" value="Submit" class="btn btn-primary btn-sm" id="submitButton"/>
+			<input onsubmit="getTime" type="submit" value="Submit" class="btn btn-primary btn-sm" id="submitButton"/>
 			</form:form>			
 		</div>		 	
 		<div><font size ="3">Answered questions: <span id ="remainingQ" style="color: #e21802">0/40</span></font></div>

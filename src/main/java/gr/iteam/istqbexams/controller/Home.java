@@ -214,7 +214,7 @@ public class Home {
 	
 	@RequestMapping(value = { "/testresults" }, method = RequestMethod.POST)
 	public String checkResults(Exam random, BindingResult result,
-			ModelMap model, @RequestParam String course) {
+			ModelMap model, @RequestParam String course, @RequestParam String coppied, @RequestParam String totaltime) {
 		if (isCurrentAuthenticationAnonymous()) {
 			return "login";
 		}
@@ -233,7 +233,6 @@ public class Home {
 			index++;
 		}
 		long percentage = (100*resultCount) / qList.size();
-		System.out.println(percentage);
 		model.addAttribute("percentage", percentage);
 		if (percentage>=65) {			
 			model.addAttribute("Result", "Congrats you passed the test!!! You scored " + percentage + "% !! You got correct " + resultCount + " out of " + qList.size() + "!!!");
@@ -245,10 +244,17 @@ public class Home {
 		Result results = new Result();
 		User user = userService.findBySSO(getPrincipal());
 		double score = ((double)resultCount*100)/(double)qList.size();
+		if (Integer.valueOf(coppied)>=2) {
+			results.setStatus("Cheated");
+		} else {
+			results.setStatus("OK");
+		}
 		results.setCourse(courseService.findById(Integer.valueOf(course)));
 		results.setDate(new Date());
 		results.setScore(score);
 		results.setUserId(user.getId());
+		results.setTime(totaltime);
+		System.out.println(totaltime);
 		resultService.save(results);
 		return "testresults";
 	}
@@ -261,6 +267,7 @@ public class Home {
 			return "login";
 		}
 		List<Result> results = resultService.list();
+		
 		for (Result result : results) {
 			result.setUser(userService.findById(result.getUserId()).getFirstName() + " " + userService.findById(result.getUserId()).getLastName());
 		}
@@ -269,6 +276,26 @@ public class Home {
 		model.addAttribute("results", results);
 		model.addAttribute("loggedinuser", getPrincipal());
 		return "resultlist";
+	}
+	
+	@RequestMapping(value = { "/resultprofile" }, method = RequestMethod.POST)
+	public String resultProfile(ModelMap model, @RequestParam int userid, @RequestParam int courseid) {
+		List<User> userList = userService.findAllUsers();
+		List<Course> courseList = courseService.findAll();
+		User user = userService.findById(userid);
+		if (isCurrentAuthenticationAnonymous()) {
+			return "login";
+		}
+		List<Result> results = resultService.listByUserAndCourse(userid, courseid);
+		for (Result result : results) {
+			result.setUser(userService.findById(result.getUserId()).getFirstName() + " " + userService.findById(result.getUserId()).getLastName());
+		}
+		model.addAttribute("user", user);
+		model.addAttribute("results", results);
+		model.addAttribute("userList", userList);
+		model.addAttribute("courseList", courseList);
+		model.addAttribute("loggedinuser", getPrincipal());
+		return "resultprofile";
 	}
 	
 	@RequestMapping(value = { "/courselist" }, method = RequestMethod.GET)
@@ -349,6 +376,7 @@ public class Home {
 	
 	@RequestMapping(value = { "/usertestresults" }, method = RequestMethod.GET)
 	public String resultList(ModelMap model, @RequestParam int userid, @RequestParam int courseid) {
+		
 		List<User> userList = userService.findAllUsers();
 		List<Course> courseList = courseService.findAll();
 		if (isCurrentAuthenticationAnonymous()) {
