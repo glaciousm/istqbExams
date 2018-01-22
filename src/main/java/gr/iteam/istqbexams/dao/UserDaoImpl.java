@@ -1,15 +1,18 @@
 package gr.iteam.istqbexams.dao;
 
+import java.util.ArrayList;
 import java.util.List;
 
 import org.hibernate.Criteria;
 import org.hibernate.Hibernate;
+import org.hibernate.Query;
 import org.hibernate.criterion.Order;
 import org.hibernate.criterion.Restrictions;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Repository;
 
+import gr.iteam.istqbexams.model.Result;
 import gr.iteam.istqbexams.model.User;
 
 
@@ -61,6 +64,11 @@ public class UserDaoImpl extends AbstractDao<Integer, User> implements UserDao {
 		Criteria crit = createEntityCriteria();
 		crit.add(Restrictions.eq("ssoId", sso));
 		User user = (User)crit.uniqueResult();
+		int id = user.getId();
+		Query query = getSession().createQuery(
+		        "delete from Result " + 
+				"where userId = '" + id + "'");
+		query.list();
 		delete(user);
 	}
 

@@ -39,6 +39,7 @@ import gr.iteam.istqbexams.service.QuestionService;
 import gr.iteam.istqbexams.service.ResultService;
 import gr.iteam.istqbexams.service.UserProfileService;
 import gr.iteam.istqbexams.service.UserService;
+import gr.iteam.istqbexams.util.DateFormatter;
 import gr.iteam.istqbexams.util.Parser;
 
 @Controller
@@ -253,8 +254,7 @@ public class Home {
 		results.setDate(new Date());
 		results.setScore(score);
 		results.setUserId(user.getId());
-		results.setTime(totaltime);
-		System.out.println(totaltime);
+		results.setTime(DateFormatter.timePassed(totaltime));
 		resultService.save(results);
 		return "testresults";
 	}
@@ -287,6 +287,26 @@ public class Home {
 			return "login";
 		}
 		List<Result> results = resultService.listByUserAndCourse(userid, courseid);
+		for (Result result : results) {
+			result.setUser(userService.findById(result.getUserId()).getFirstName() + " " + userService.findById(result.getUserId()).getLastName());
+		}
+		model.addAttribute("user", user);
+		model.addAttribute("results", results);
+		model.addAttribute("userList", userList);
+		model.addAttribute("courseList", courseList);
+		model.addAttribute("loggedinuser", getPrincipal());
+		return "resultprofile";
+	}
+	
+	@RequestMapping(value = { "/myresults" }, method = RequestMethod.GET)
+	public String myResultProfile(ModelMap model) {
+		List<User> userList = userService.findAllUsers();
+		List<Course> courseList = courseService.findAll();
+		User user = userService.findBySSO(getPrincipal());
+		if (isCurrentAuthenticationAnonymous()) {
+			return "login";
+		}
+		List<Result> results = resultService.listByUser(user.getId());
 		for (Result result : results) {
 			result.setUser(userService.findById(result.getUserId()).getFirstName() + " " + userService.findById(result.getUserId()).getLastName());
 		}
@@ -406,14 +426,41 @@ public class Home {
 	
 	@RequestMapping(value = { "/newuser" }, method = RequestMethod.GET)
 	public String newUser(ModelMap model) {
-		if (isCurrentAuthenticationAnonymous()) {
-			return "login";
-		}
 		User user = new User();
 		model.addAttribute("user", user);
 		model.addAttribute("edit", false);
 		model.addAttribute("loggedinuser", getPrincipal());
 		return "registration";
+	}
+	
+	@RequestMapping(value = { "/profile" }, method = RequestMethod.GET)
+	public String profile(ModelMap model) {
+		if (isCurrentAuthenticationAnonymous()) {
+			return "login";
+		}
+		System.out.println(getPrincipal());
+		User user = userService.findBySSO(getPrincipal());
+		model.addAttribute("user", user);
+		model.addAttribute("edit", true);
+		model.addAttribute("loggedinuser", getPrincipal());
+		return "profile";
+	}
+	
+	@RequestMapping(value = { "/profile" }, method = RequestMethod.POST)
+	public String updateProfile(@Valid User user, BindingResult result,
+			ModelMap model) {
+		if (isCurrentAuthenticationAnonymous()) {
+			return "login";
+		}
+		if (result.hasErrors()) {
+			return "profile";
+		}
+
+		userService.updateUser(user);
+
+		model.addAttribute("success", "User " + user.getFirstName() + " "+ user.getLastName() + " updated successfully");
+		model.addAttribute("loggedinuser", getPrincipal());
+		return "success";
 	}
 	
 	@RequestMapping(value = { "/newuser" }, method = RequestMethod.POST)

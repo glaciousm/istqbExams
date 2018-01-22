@@ -19,7 +19,7 @@
 			  <!-- Default panel contents -->
 			  <div style="display: inline-block;left: 2%;width: 96%">
 				  <div style="float: left">
-				  	<img alt="ISTQB" src="https://www.isqi.org/tl_files/data/Registration%20Forms/Training%20Provider%20Logos/ISTQB%20Logo.png" style="width: 200px;left: 30px;">
+				  	<img alt="ISTQB" src="https://www.istqb.org/images/istqb_logo_network.png" style="width: 200px;left: 30px;">
 				  </div>
 				  <div style="float: right;">
 				  	<img alt="ISTQB" src="http://www.iteam.gr/wp-content/uploads/2015/10/logo.png" style="width: 200px;right: 30px; margin-top: 20px">
@@ -32,7 +32,7 @@
 				<br>
 				<h5>In order to begin a test click on "Take a Test" link on the upper right</h5>
 				<br>
-				<h5>All answered tests are stored under you username and the total results can be viewed at any time</h5>
+				<h5>All answered tests are stored under your username and the total results can be viewed at any time</h5>
 				<br>
 				<br>  
 			</div>
