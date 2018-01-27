@@ -15,10 +15,18 @@
 <body>
  	<div class="generic-container">
 		<%@include file="authheader.jsp" %>
+		
+		<script type="text/javascript">
+	        function Return() {
+	            document.getElementById("whereToReturn").value = "yes";
+	            console.log("OK!");
+	        }
+    	</script>
 
 		<div class="well lead">Question Form</div>
 	 	<form:form method="POST" modelAttribute="question" class="form-horizontal">
 			<form:input type="hidden" path="id" id="id"/>
+			<input type="hidden" name="whereToReturn" id="whereToReturn" value="empty"/>
 			
 			<div class="row">
 				<div class="form-group col-md-12">
@@ -103,7 +111,7 @@
 				<div class="form-group col-md-12">
 					<label class="col-md-3 control-lable" for="course">Course</label>
 					<div class="col-md-7">
-						<form:select required="required" path="course" style="text-transform: uppercase">
+						<form:select id="courseSelect" required="required" path="course" style="text-transform: uppercase">
 							<option value="${question.course.id}" >${question.course.name}</option>
 								<c:forEach var="item" varStatus="loop" items="${course}">
 		        					<option value="${item.id}">${item.name}</option>
@@ -120,12 +128,11 @@
 							<input type="submit" value="Update" class="btn btn-primary btn-sm"/> or <a href="<c:url value='/list' />">Cancel</a>
 						</c:when>
 						<c:otherwise>
-							<input type="submit" value="Add" class="btn btn-primary btn-sm"/> or <a href="<c:url value='/list' />">Cancel</a>
+							<input onclick="Return()" type="submit" value="Add more" class="btn btn-primary btn-sm"/> <input type="submit" value="Add and return" class="btn btn-primary btn-sm"/> or <a href="<c:url value='/list' />">Cancel</a>
 						</c:otherwise>
 					</c:choose>
 				</div>
-			</div>
-	
+			</div>	
 		</form:form>
 	</div>
 </body>

@@ -181,7 +181,7 @@ public class Home {
 	}
 
 	@RequestMapping(value = { "/newquestion" }, method = RequestMethod.POST)
-	public String saveQuestion(@Valid Question question, BindingResult result, ModelMap model, @RequestParam String course) {
+	public String saveQuestion(@Valid Question question, BindingResult result, ModelMap model, @RequestParam String course, @RequestParam(name = "whereToReturn") String whereToReturn) {
 		if (isCurrentAuthenticationAnonymous()) {
 			return "login";
 		}
@@ -192,7 +192,11 @@ public class Home {
 		questionService.saveOrUpdate(question);
 		model.addAttribute("loggedinuser", getPrincipal());
 		model.addAttribute("success", "Question " + question.getId() + " added successfully");
-		return "redirect:/list-" + Integer.valueOf(course);
+		if (whereToReturn.equals("yes")) {
+			return "question";
+		} else {
+			return "redirect:/list-" + Integer.valueOf(course);
+		}
 	}
 	
 	@RequestMapping(value = { "/delete-question-{id}" }, method = RequestMethod.GET)
