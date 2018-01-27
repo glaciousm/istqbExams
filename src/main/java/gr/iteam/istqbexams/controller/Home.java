@@ -90,12 +90,25 @@ public class Home {
 		return "selectcourse";
 	}
 	
+	
 	@RequestMapping(value = { "/list" }, method = RequestMethod.POST)
 	public String list(ModelMap model, @RequestParam String name) {
 		if (isCurrentAuthenticationAnonymous()) {
 			return "login";
 		}
 		List<Question> questions = questionService.listFromCourse(courseService.findByName(name).getId());
+		model.addAttribute("questions", questions);
+		model.addAttribute("counter", questions.size());
+		model.addAttribute("loggedinuser", getPrincipal());
+		return "questionlist";
+	}
+	
+	@RequestMapping(value = { "/list-{id}" }, method = RequestMethod.GET)
+	public String questList(ModelMap model, @PathVariable int id) {
+		if (isCurrentAuthenticationAnonymous()) {
+			return "login";
+		}
+		List<Question> questions = questionService.listFromCourse(id);
 		model.addAttribute("questions", questions);
 		model.addAttribute("counter", questions.size());
 		model.addAttribute("loggedinuser", getPrincipal());
@@ -168,7 +181,7 @@ public class Home {
 	}
 
 	@RequestMapping(value = { "/newquestion" }, method = RequestMethod.POST)
-	public String saveUser(@Valid Question question, BindingResult result, ModelMap model, @RequestParam String course) {
+	public String saveQuestion(@Valid Question question, BindingResult result, ModelMap model, @RequestParam String course) {
 		if (isCurrentAuthenticationAnonymous()) {
 			return "login";
 		}
@@ -179,7 +192,22 @@ public class Home {
 		questionService.saveOrUpdate(question);
 		model.addAttribute("loggedinuser", getPrincipal());
 		model.addAttribute("success", "Question " + question.getId() + " added successfully");
-		return "success";
+		return "redirect:/list-" + Integer.valueOf(course);
+	}
+	
+	@RequestMapping(value = { "/delete-question-{id}" }, method = RequestMethod.GET)
+	public String deleteQuestion(@PathVariable int id, ModelMap model) {
+		if (isCurrentAuthenticationAnonymous()) {
+			return "login";
+		}
+		int courseId = questionService.findById(id).getCourse().getId();
+		if (isCurrentAuthenticationAdmin() == false || !isCurrentAuthenticationManager() == false) {
+			return "redirect:/list-" + courseId;
+		}
+		questionService.delete(id);
+		model.addAttribute("loggedinuser", getPrincipal());
+		model.addAttribute("success", "Question " + id + " deleted successfully");
+		return "redirect:/list-" + courseId;
 	}
 	
 	@RequestMapping(value = { "/edit-question-{id}" }, method = RequestMethod.GET)
@@ -328,7 +356,7 @@ public class Home {
 		model.addAttribute("loggedinuser", getPrincipal());
 		return "courselist";
 	}
-	
+		
 	@RequestMapping(value = { "/edit-course-{id}" }, method = RequestMethod.GET)
 	public String editCourse(@PathVariable int id, ModelMap model) {
 		if (isCurrentAuthenticationAnonymous()) {
@@ -339,6 +367,16 @@ public class Home {
 		model.addAttribute("edit", true);
 		model.addAttribute("loggedinuser", getPrincipal());
 		return "course";
+	}
+	
+	@RequestMapping(value = { "/clear-course-{id}" }, method = RequestMethod.GET)
+	public String clearCourse(@PathVariable int id, ModelMap model) {
+		if (isCurrentAuthenticationAnonymous()) {
+			return "login";
+		}
+		courseService.clear(id);
+		model.addAttribute("loggedinuser", getPrincipal());
+		return "redirect:/courselist";
 	}
 	
 	@RequestMapping(value = { "/edit-course-{id}" }, method = RequestMethod.POST)
@@ -379,7 +417,7 @@ public class Home {
 
 		model.addAttribute("success", "Course " + course.getName() + " saved successfully");
 		model.addAttribute("loggedinuser", getPrincipal());
-		return "success";
+		return "redirect:/courselist";
 	}
 	
 	@RequestMapping(value = { "/delete-course-{id}" }, method = RequestMethod.GET)
@@ -390,7 +428,7 @@ public class Home {
 		}
 		courseService.deleteByCourse(id);
 		model.addAttribute("success", "Course " + name + " successfully deleted");
-		return "success";
+		return "redirect:/courselist";
 	}
 	
 	
@@ -438,7 +476,6 @@ public class Home {
 		if (isCurrentAuthenticationAnonymous()) {
 			return "login";
 		}
-		System.out.println(getPrincipal());
 		User user = userService.findBySSO(getPrincipal());
 		model.addAttribute("user", user);
 		model.addAttribute("edit", true);
@@ -483,8 +520,7 @@ public class Home {
 
 		model.addAttribute("success", "User " + user.getFirstName() + " "+ user.getLastName() + " registered successfully");
 		model.addAttribute("loggedinuser", getPrincipal());
-		//return "success";
-		return "success";
+		return "redirect:/userlist";
 	}
 	
 	@RequestMapping(value = { "/edit-user-{ssoId}" }, method = RequestMethod.GET)
@@ -540,7 +576,7 @@ public class Home {
 			return "login";
 		}
 		userService.deleteUserBySSO(ssoId);
-		return "redirect:/list";
+		return "redirect:/userlist";
 	}
 	
 	@RequestMapping(value = "/Access_Denied", method = RequestMethod.GET)
@@ -569,6 +605,25 @@ public class Home {
 	private boolean isCurrentAuthenticationAnonymous() {
 	    final Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
 	    return authenticationTrustResolver.isAnonymous(authentication);
+	}
+	
+	private boolean isCurrentAuthenticationManager() {
+		User user = userService.findBySSO(getPrincipal());
+
+		if (user.getUserProfiles().toString().contains("MANAGER")) {
+			return true;
+		} else {
+			return false;
+		}
+	}
+	
+	private boolean isCurrentAuthenticationAdmin() {
+	    User user = userService.findBySSO(getPrincipal());
+		if (user.getUserProfiles().toString().contains("ADMIN")) {
+			return true;
+		} else {
+			return false;
+		}
 	}
 	
 	private String getPrincipal(){

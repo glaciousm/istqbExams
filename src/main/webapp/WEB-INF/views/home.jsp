@@ -30,7 +30,7 @@
 				<h3>Welcome to iteam's Exam site for Istqb</h3>
 				<h4>At the moment only ISTQB Foundation is available</h4>
 				<br>
-				<h5>In order to begin a test click on "Take a Test" link on the upper right</h5>
+				<h5>In order to begin a test click on "Take a Test" link on the upper menu</h5>
 				<br>
 				<h5>All answered tests are stored under your username and the total results can be viewed at any time</h5>
 				<br>

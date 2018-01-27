@@ -68,7 +68,7 @@ public class UserDaoImpl extends AbstractDao<Integer, User> implements UserDao {
 		Query query = getSession().createQuery(
 		        "delete from Result " + 
 				"where userId = '" + id + "'");
-		query.list();
+		query.executeUpdate();
 		delete(user);
 	}
 

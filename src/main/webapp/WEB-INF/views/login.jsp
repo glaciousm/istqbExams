@@ -19,6 +19,7 @@
 				<div class="login-card">
 					<div class="login-form">
 						<c:url var="loginUrl" value="/login" />
+						<c:url var="newuser" value="/newuser" />
 						<form action="${loginUrl}" method="post" class="form-horizontal">
 							<c:if test="${param.error != null}">
 								<div class="alert alert-danger">
@@ -50,9 +51,9 @@
 							</div>
 						</form>
 						<br>
-						<button type="button" class="btn btn-info" data-toggle="collapse" data-target="#register">Register</button>
+						<button type="button" class="btn btn-info" data-toggle="collapse" data-target="#register" disabled="disabled">Register</button>
 					  	<div id="register" class="collapse">
-					  	<form action="/istqbExams/newuser" method="post" class="form-horizontal">
+					  	<form action="${newuser}" method="post" class="form-horizontal">
 					  		<div style="float: left;width: 200px;margin-top: 10px;margin-bottom: 10px;">
 						    	<label for="username"><i class="fa fa-user"></i><strong> Username</strong></label>
 								<input type="text" class="form-control" id="username" name="ssoId" placeholder="Enter Username" required>

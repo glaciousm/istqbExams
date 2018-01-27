@@ -24,7 +24,7 @@
 				<div class="form-group col-md-12">
 					<label class="col-md-3 control-lable" for="context">Question</label>
 					<div class="col-md-7">
-						<form:textarea path="context" rows="10" cols="30"  id="context" class="form-control" style="height:100px;"/>
+						<form:textarea required="required" path="context" rows="10" cols="30"  id="context" class="form-control" style="height:100px;"/>
 						<%-- <form:input type="text" path="context" id="context" class="form-control input-sm" style="height:200px;"/> --%>
 					</div>
 				</div>
@@ -52,7 +52,7 @@
 				<div class="form-group col-md-12">
 					<label class="col-md-3 control-lable" for="answera">Response A</label>
 					<div class="col-md-7">
-						<form:input type="text" path="answera" id="answera" class="form-control input-sm" />
+						<form:input required="required" type="text" path="answera" id="answera" class="form-control input-sm" />
 					</div>
 				</div>
 			</div>
@@ -60,7 +60,7 @@
 				<div class="form-group col-md-12">
 					<label class="col-md-3 control-lable" for="answerb">Response B</label>
 					<div class="col-md-7">
-						<form:input type="text" path="answerb" id="answerb" class="form-control input-sm" />
+						<form:input required="required" type="text" path="answerb" id="answerb" class="form-control input-sm" />
 					</div>
 				</div>
 			</div>
@@ -68,7 +68,7 @@
 				<div class="form-group col-md-12">
 					<label class="col-md-3 control-lable" for="answerc">Response C</label>
 					<div class="col-md-7">
-						<form:input type="text" path="answerc" id="answerc" class="form-control input-sm" />
+						<form:input required="required" type="text" path="answerc" id="answerc" class="form-control input-sm" />
 					</div>
 				</div>
 			</div>
@@ -92,7 +92,7 @@
 				<div class="form-group col-md-12">
 					<label class="col-md-3 control-lable" for="correct">Correct Answer</label>
 					<div class="col-md-7">
-						<form:select path="correct" style="text-transform: uppercase">
+						<form:select required="required" path="correct" style="text-transform: uppercase">
 							 <form:option value="${question.correct}" />
     						 <form:options items="${correct}" />
 						</form:select>
@@ -103,7 +103,7 @@
 				<div class="form-group col-md-12">
 					<label class="col-md-3 control-lable" for="course">Course</label>
 					<div class="col-md-7">
-						<form:select path="course" style="text-transform: uppercase">
+						<form:select required="required" path="course" style="text-transform: uppercase">
 							<option value="${question.course.id}" >${question.course.name}</option>
 								<c:forEach var="item" varStatus="loop" items="${course}">
 		        					<option value="${item.id}">${item.name}</option>

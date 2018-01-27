@@ -13,14 +13,14 @@ import gr.iteam.istqbexams.model.Course;
 
 @Service("courseService")
 @Transactional
-public class CourseServiceImpl implements CourseService{
-	
+public class CourseServiceImpl implements CourseService {
+
 	@Autowired
 	private CourseDao dao;
-	
+
 	@Autowired
 	private ResultDao resultDao;
-	
+
 	@Autowired
 	private QuestionDao questionDao;
 
@@ -32,17 +32,17 @@ public class CourseServiceImpl implements CourseService{
 	@Override
 	public void saveOrUpdate(Course course) {
 		Course entity = null;
-		if (course.getId()!=null) {
+		if (course.getId() != null) {
 			entity = dao.findByCourseId(course.getId());
-			if(entity!=null){
+			if (entity != null) {
 				entity.setId(course.getId());
-				if(!course.getName().equals(entity.getName())){
+				if (!course.getName().equals(entity.getName())) {
 					entity.setName(course.getName());
 				}
 			} else {
 				dao.save(course);
 			}
-		}	else {
+		} else {
 			dao.save(course);
 		}
 	}
@@ -68,11 +68,16 @@ public class CourseServiceImpl implements CourseService{
 		if (resultDao.findByCourseId(course) != null) {
 			resultDao.deleteByCourse(course);
 		}
-		if (questionDao.findByCourse(course)!=null) {
+		if (questionDao.findByCourse(course) != null) {
 			questionDao.deleteByCourse(course);
 		}
-		
+
 		dao.delete(courseid);
+	}
+
+	@Override
+	public void clear(int id) {
+		dao.clear(id);
 	}
 
 }
