@@ -9,7 +9,7 @@
 
 <head>
 	<meta http-equiv="Content-Type" content="text/html; charset=ISO-8859-1">
-	<title>Users List</title>
+	<title>My Results</title>
 	<link href="<c:url value='/static/css/bootstrap.css' />" rel="stylesheet"></link>
 	<link href="<c:url value='/static/css/app.css' />" rel="stylesheet"></link>
 	<script type="text/javascript" src="https://www.gstatic.com/charts/loader.js"></script>
@@ -45,7 +45,7 @@
 			  <!-- Default panel contents -->
 		  	<div class="panel-heading">
 			  	<div  class="floatLeft" style="display: inline-block;">
-			  		<span class="lead">List of Results for User ${user.firstName} ${user.lastName}</span>
+			  		<span class="lead">Results for User ${user.firstName} ${user.lastName}</span>
 			  	</div>
 			  	<div class="floatRight" style="width:60%;display: inline-block">
 			  		<form action="/istqbExams/resultprofile" method="post">
