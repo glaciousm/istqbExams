@@ -1,4 +1,5 @@
 <%@ taglib prefix="sec" uri="http://www.springframework.org/security/tags"%>
+
 <link href="<c:url value='/static/css/menu.css' />" rel="stylesheet"></link>
 
 <div class="menuBar">
