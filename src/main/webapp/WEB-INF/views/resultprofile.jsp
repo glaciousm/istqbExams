@@ -14,25 +14,6 @@
 	<link href="<c:url value='/static/css/app.css' />" rel="stylesheet"></link>
 	<script type="text/javascript" src="https://www.gstatic.com/charts/loader.js"></script>
     <script type="text/javascript">
-      /* google.charts.load('current', {'packages':['corechart']});
-      google.charts.setOnLoadCallback(drawChart);
-
-      function drawChart() {
-        var data = google.visualization.arrayToDataTable([
-            ['Date', 'Score'],
-        	<c:forEach items="${results}" var="result">		
-            	['${result.date}',  ${result.score}],
-			</c:forEach>
-        ]);
-
-        var options = {
-          title: '${user.firstName} ${user.lastName} Score curve',
-          curveType: 'function'
-        };
-
-        var chart = new google.visualization.LineChart(document.getElementById('curve_chart'));
-
-        chart.draw(data, options); */
         google.charts.load('current', {'packages':['line']});
         google.charts.setOnLoadCallback(drawChart);
 
