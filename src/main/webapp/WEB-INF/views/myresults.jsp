@@ -67,7 +67,7 @@
 				        <th>Score</th>
 				        <th>Course</th>
 				        <th>Date</th>
-				        <th>Status</th>
+<!-- 				        <th>Status</th> -->
 				        <th>Total Time</th>
 					</tr>					
 		    	</thead>
@@ -78,7 +78,7 @@
 						<td>${result.score} %</td>
 						<td>${result.course.name}</td>
 						<td>${result.date}</td>	
-						<td>${result.status}</td>
+<%-- 						<td>${result.status}</td> --%>
 						<td>${result.time}</td>					    
 					</tr>			
 				</c:forEach>
