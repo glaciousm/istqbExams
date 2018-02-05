@@ -3,6 +3,7 @@ package gr.iteam.istqbexams.dao;
 import java.util.List;
 
 import org.hibernate.Criteria;
+import org.hibernate.Query;
 import org.hibernate.criterion.Order;
 import org.hibernate.criterion.Restrictions;
 import org.springframework.stereotype.Repository;
@@ -40,6 +41,14 @@ public class CourseDaoImpl extends AbstractDao<Integer, Course>   implements Cou
 		crit.add(Restrictions.eq("id", id));
 		Course courseD = (Course)crit.uniqueResult();
 		delete(courseD);
+	}
+	
+	@Override
+	public void clear(int id) {		
+		Query query = getSession().createQuery(
+		        "delete from Question " + 
+				"where courseId = '" + id + "'");
+		query.executeUpdate();
 	}
 
 	@Override

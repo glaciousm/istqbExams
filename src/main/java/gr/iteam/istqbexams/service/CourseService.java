@@ -15,6 +15,8 @@ public interface CourseService {
 	void saveOrUpdate(Course course);
 	
 	void delete(int id);
+	
+	void clear(int id);
 
 	List<Course> findAll(); 
 

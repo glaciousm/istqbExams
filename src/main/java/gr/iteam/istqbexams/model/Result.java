@@ -31,6 +31,12 @@ public class Result {
 	@Column(name="score")
 	double score;
 	
+	@Column(name="status")
+	String status;
+	
+	@Column(name="time")
+	String time;
+	
 	@ManyToOne
     @JoinColumn(name = "courseid", referencedColumnName = "id")
 	private Course course;
@@ -40,6 +46,22 @@ public class Result {
 	
 	public Result() {
 		// TODO Auto-generated constructor stub
+	}
+
+	public String getTime() {
+		return time;
+	}
+
+	public void setTime(String time) {
+		this.time = time;
+	}
+
+	public String getStatus() {
+		return status;
+	}
+
+	public void setStatus(String status) {
+		this.status = status;
 	}
 
 	public Course getCourse() {
@@ -92,9 +114,8 @@ public class Result {
 
 	@Override
 	public String toString() {
-		return "Result [id=" + id + ", userId=" + userId + ", date=" + date + ", score=" + score + ", course=" + course
-				+ ", user=" + user + "]";
+		return "Result [id=" + id + ", userId=" + userId + ", date=" + date + ", score=" + score + ", status=" + status
+				+ ", time=" + time + ", course=" + course + ", user=" + user + "]";
 	}
-
 
 }

@@ -15,5 +15,7 @@ public interface CourseDao {
 	List<Course> list();
 	
 	void delete(int id);
+	
+	void clear(int id);
 
 }

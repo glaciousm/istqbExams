@@ -8,7 +8,7 @@
 
 <head>
 	<meta http-equiv="Content-Type" content="text/html; charset=ISO-8859-1">
-	<title>Users List</title>
+	<title>Question List</title>
 	<link href="<c:url value='/static/css/bootstrap.css' />" rel="stylesheet"></link>
 	<link href="<c:url value='/static/css/app.css' />" rel="stylesheet"></link>
 </head>
@@ -43,11 +43,15 @@
     					<c:if test="${not empty questions.answere}"><br><b>E.</b> ${questions.answere}</c:if></td>
 						<td style="text-transform: uppercase">${questions.correct}</td>
 						<td><a href="<c:url value='/edit-question-${questions.id}' />" class="btn btn-success custom-width">edit</a></td>
+						<td><a onclick="return confirm('Are you sure you want to continue?')" href="<c:url value='/delete-question-${questions.id}' />" class="btn btn-danger custom-width">delete</a></td>
 					</tr>
 				</c:forEach>
 	    		</tbody>
 	    	</table>
-		</div>		 	
+		</div>	
+			<sec:authorize access="hasRole('ADMIN') or hasRole('MANAGER')">
+		 		<a href="<c:url value='/newquestion' />">Add new Question</a>
+	 	</sec:authorize>
    	</div>
 </body>
 </html>
