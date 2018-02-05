@@ -52,12 +52,12 @@
 					</tr>
 		    	</thead>
 	    		<tbody>
-				<c:forEach items="${results}" var="result">
+				<c:forEach items="${results}" var="result" varStatus = "loop">
 					<tr>
 						<td>${result.user}</td>
 						<td>${result.score} %</td>
 						<td>${result.course.name}</td>
-						<td>${result.date}</td>
+						<td>${dates[loop.index]}</td>
 						<%-- <td>${result.status}</td> --%>
 						<td>${result.time}</td>						    
 					</tr>

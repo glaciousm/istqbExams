@@ -302,6 +302,7 @@ public class Home {
 	public String resultList(ModelMap model) {
 		List<User> userList = userService.findAllUsers();
 		List<Course> courseList = courseService.findAll();
+		List<String> dateList = new ArrayList<>();
 		if (isCurrentAuthenticationAnonymous()) {
 			return "login";
 		}
@@ -310,10 +311,12 @@ public class Home {
 		for (Result result : results) {
 			result.setUser(userService.findById(result.getUserId()).getFirstName() + " "
 					+ userService.findById(result.getUserId()).getLastName());
+			dateList.add(result.getDate().toString().substring(0,result.getDate().toString().length() -11));
 		}
 		model.addAttribute("courseList", courseList);
 		model.addAttribute("userList", userList);
 		model.addAttribute("results", results);
+		model.addAttribute("dates", dateList);
 		model.addAttribute("loggedinuser", getPrincipal());
 		return "resultlist";
 	}
@@ -322,6 +325,7 @@ public class Home {
 	public String resultProfile(ModelMap model, @RequestParam int userid, @RequestParam int courseid) {
 		List<User> userList = userService.findAllUsers();
 		List<Course> courseList = courseService.findAll();
+		List<String> dateList = new ArrayList<>();
 		User user = userService.findById(userid);
 		if (isCurrentAuthenticationAnonymous()) {
 			return "login";
@@ -330,11 +334,13 @@ public class Home {
 		for (Result result : results) {
 			result.setUser(userService.findById(result.getUserId()).getFirstName() + " "
 					+ userService.findById(result.getUserId()).getLastName());
+			dateList.add(result.getDate().toString().substring(0,result.getDate().toString().length() -11));
 		}
 		model.addAttribute("user", user);
 		model.addAttribute("results", results);
 		model.addAttribute("userList", userList);
 		model.addAttribute("courseList", courseList);
+		model.addAttribute("dates", dateList);
 		model.addAttribute("loggedinuser", getPrincipal());
 		return "resultprofile";
 	}
@@ -343,6 +349,7 @@ public class Home {
 	public String myResultProfile(ModelMap model) {
 		List<User> userList = userService.findAllUsers();
 		List<Course> courseList = courseService.findAll();
+		List<String> dateList = new ArrayList<>();
 		User user = userService.findBySSO(getPrincipal());
 		if (isCurrentAuthenticationAnonymous()) {
 			return "login";
@@ -351,11 +358,13 @@ public class Home {
 		for (Result result : results) {
 			result.setUser(userService.findById(result.getUserId()).getFirstName() + " "
 					+ userService.findById(result.getUserId()).getLastName());
+			dateList.add(result.getDate().toString().substring(0,result.getDate().toString().length() -11));
 		}
 		model.addAttribute("user", user);
 		model.addAttribute("results", results);
 		model.addAttribute("userList", userList);
 		model.addAttribute("courseList", courseList);
+		model.addAttribute("dates", dateList);
 		model.addAttribute("loggedinuser", getPrincipal());
 		return "resultprofile";
 	}
